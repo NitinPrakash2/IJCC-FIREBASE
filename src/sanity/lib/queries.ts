@@ -77,6 +77,16 @@ export const CONTACT_PAGE_QUERY = groq`
   *[_type == "contactPage"][0] {
     pageTitle,
     introduction,
+    corporateOfficeTitle,
+    corporateOfficeAddress,
+    branchOfficeTitle,
+    branchOfficeAddress,
+    japanOfficeTitle,
+    japanOfficeAddress,
+    phoneBranch,
+    phoneJapan,
+    faqTitle,
+    faqs,
     mapCoordinates
   }
 `;

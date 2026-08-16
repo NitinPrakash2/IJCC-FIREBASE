@@ -67,22 +67,22 @@ export default function ContactPage() {
                 <div className="flex items-start gap-4">
                     <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                     <div>
-                        <h3 className="font-semibold">{t('contact_corporateOfficeTitle')}</h3>
-                        <p className="text-muted-foreground whitespace-pre-wrap">{settings?.address || t('contact_corporateOfficeAddress')}</p>
+                        <h3 className="font-semibold">{contactPage?.corporateOfficeTitle || t('contact_corporateOfficeTitle')}</h3>
+                        <p className="text-muted-foreground whitespace-pre-wrap">{contactPage?.corporateOfficeAddress || settings?.address || t('contact_corporateOfficeAddress')}</p>
                     </div>
                 </div>
                 <div className="flex items-start gap-4">
                     <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                     <div>
-                        <h3 className="font-semibold">{t('contact_branchOfficeTitle')}</h3>
-                        <p className="text-muted-foreground">{t('contact_branchOfficeAddress')}</p>
+                        <h3 className="font-semibold">{contactPage?.branchOfficeTitle || t('contact_branchOfficeTitle')}</h3>
+                        <p className="text-muted-foreground">{contactPage?.branchOfficeAddress || t('contact_branchOfficeAddress')}</p>
                     </div>
                 </div>
                  <div className="flex items-start gap-4">
                     <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                     <div>
-                        <h3 className="font-semibold">{t('contact_japanOfficeTitle')}</h3>
-                        <p className="text-muted-foreground">{t('contact_japanOfficeAddress')}</p>
+                        <h3 className="font-semibold">{contactPage?.japanOfficeTitle || t('contact_japanOfficeTitle')}</h3>
+                        <p className="text-muted-foreground">{contactPage?.japanOfficeAddress || t('contact_japanOfficeAddress')}</p>
                     </div>
                 </div>
             </div>
@@ -97,26 +97,26 @@ export default function ContactPage() {
                 </div>
                  <div className="flex items-center gap-4">
                     <Phone className="h-6 w-6 text-primary flex-shrink-0" />
-                    <p className="text-muted-foreground">{t('contact_phone_branch')}</p>
+                    <p className="text-muted-foreground">{contactPage?.phoneBranch || t('contact_phone_branch')}</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <Phone className="h-6 w-6 text-primary flex-shrink-0" />
-                    <p className="text-muted-foreground">{t('contact_phone_japan')}</p>
+                    <p className="text-muted-foreground">{contactPage?.phoneJapan || t('contact_phone_japan')}</p>
                 </div>
             </div>
         </div>
       </div>
 
       <div className="mt-24 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-headline text-center mb-12">{t('contact_faq_title')}</h2>
+        <h2 className="text-3xl font-headline text-center mb-12">{contactPage?.faqTitle || t('contact_faq_title')}</h2>
         <Accordion type="single" collapsible className="w-full">
-          {faqData.map((faq, index) => (
+          {(contactPage?.faqs || faqData).map((faq: any, index: number) => (
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger className="text-left font-semibold text-lg hover:no-underline hover:text-primary transition-colors">
-                {faq.q}
+                {faq.question || faq.q}
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground text-base leading-relaxed whitespace-pre-wrap pt-2">
-                {faq.a}
+                {faq.answer || faq.a}
               </AccordionContent>
             </AccordionItem>
           ))}

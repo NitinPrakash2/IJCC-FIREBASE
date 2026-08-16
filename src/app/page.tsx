@@ -11,6 +11,9 @@ import Autoplay from "embla-carousel-autoplay";
 import React from "react";
 import { FloatingSocials } from "@/components/floating-socials";
 import { useTranslation } from "@/hooks/use-translation";
+import { useState, useEffect } from "react";
+import { client } from "@/sanity/lib/client";
+import { HOME_PAGE_QUERY } from "@/sanity/lib/queries";
 
 
 const partners = [
@@ -43,6 +46,19 @@ const heroItems = [
 
 export default function Home() {
   const { t } = useTranslation();
+  const [cmsHome, setCmsHome] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchHome() {
+      try {
+        const data = await client.fetch(HOME_PAGE_QUERY);
+        setCmsHome(data);
+      } catch (error) {
+        console.error("Failed to fetch home page from Sanity", error);
+      }
+    }
+    fetchHome();
+  }, []);
 
   const features = [
     {
@@ -118,10 +134,14 @@ export default function Home() {
         <div className="relative z-10 container px-4 md:px-6">
            <div className="space-y-6 max-w-4xl mx-auto">
               <h1 className="text-4xl font-headline tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-                {t('heroTitlePart1')} <span className="text-accent">{t('heroTitleIndia')}</span> & <span className="text-accent">{t('heroTitleJapan')}</span> {t('heroTitlePart2')}
+                {cmsHome?.heroTitle ? cmsHome.heroTitle : (
+                  <>
+                    {t('heroTitlePart1')} <span className="text-accent">{t('heroTitleIndia')}</span> & <span className="text-accent">{t('heroTitleJapan')}</span> {t('heroTitlePart2')}
+                  </>
+                )}
               </h1>
               <p className="max-w-2xl mx-auto text-lg md:text-xl">
-                {t('heroDescription')}
+                {cmsHome?.heroSubtitle || t('heroDescription')}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row justify-center">
                 <Button asChild size="lg" className="rounded-full">

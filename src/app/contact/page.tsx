@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
-import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
+import { SITE_SETTINGS_QUERY, CONTACT_PAGE_QUERY } from "@/sanity/lib/queries";
 
 export default function ContactPage() {
   const { t } = useTranslation();
@@ -31,25 +31,30 @@ export default function ContactPage() {
   ];
 
   const [settings, setSettings] = useState<any>(null);
+  const [contactPage, setContactPage] = useState<any>(null);
 
   useEffect(() => {
-    async function fetchSettings() {
+    async function fetchData() {
       try {
-        const sData = await client.fetch(SITE_SETTINGS_QUERY);
+        const [sData, cData] = await Promise.all([
+          client.fetch(SITE_SETTINGS_QUERY),
+          client.fetch(CONTACT_PAGE_QUERY)
+        ]);
         if (sData) setSettings(sData);
+        if (cData) setContactPage(cData);
       } catch (error) {
         console.error('Failed to fetch from Sanity', error);
       }
     }
-    fetchSettings();
+    fetchData();
   }, []);
 
   return (
     <div className="container py-12">
       <div className="space-y-4 mb-12 text-center">
-        <h1 className="text-4xl font-headline tracking-tighter sm:text-5xl">{t('contact_title')}</h1>
+        <h1 className="text-4xl font-headline tracking-tighter sm:text-5xl">{contactPage?.pageTitle || t('contact_title')}</h1>
         <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl">
-          {t('contact_subtitle')}
+          {contactPage?.introduction || t('contact_subtitle')}
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

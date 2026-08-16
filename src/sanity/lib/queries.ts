@@ -53,3 +53,65 @@ export const GALLERY_QUERY = groq`
     "imageUrl": image.asset->url
   }
 `;
+
+export const HOME_PAGE_QUERY = groq`
+  *[_type == "homePage"][0] {
+    heroTitle,
+    heroSubtitle,
+    "heroImageUrl": heroImage.asset->url,
+    welcomeMessage
+  }
+`;
+
+export const ABOUT_PAGE_QUERY = groq`
+  *[_type == "aboutPage"][0] {
+    pageTitle,
+    introduction,
+    mission,
+    history,
+    "bannerImageUrl": bannerImage.asset->url
+  }
+`;
+
+export const CONTACT_PAGE_QUERY = groq`
+  *[_type == "contactPage"][0] {
+    pageTitle,
+    introduction,
+    mapCoordinates
+  }
+`;
+
+export const NEWS_ARTICLES_QUERY = groq`
+  *[_type == "newsArticle"] | order(publishDate desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    publishDate,
+    "featuredImageUrl": featuredImage.asset->url,
+    excerpt,
+    content
+  }
+`;
+
+export const RESOURCES_QUERY = groq`
+  *[_type == "resourceItem"] | order(_createdAt desc) {
+    _id,
+    title,
+    category,
+    description,
+    "fileUrl": file.asset->url,
+    externalLink
+  }
+`;
+
+export const SERVICES_QUERY = groq`
+  *[_type == "serviceItem"] | order(coalesce(order, 99) asc) {
+    _id,
+    title,
+    "slug": slug.current,
+    iconName,
+    shortDescription,
+    detailedContent,
+    order
+  }
+`;

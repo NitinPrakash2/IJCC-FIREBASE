@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Handshake, School, Lightbulb, Briefcase, Building, Landmark, Globe, Zap, University, Plane } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/use-translation";
+import { useState, useEffect } from "react";
+import { client } from "@/sanity/lib/client";
+import { SERVICES_QUERY } from "@/sanity/lib/queries";
 
 const servicesListRaw = [
     { id: "indian-schools", icon: <School className="h-10 w-10 text-primary" /> },
@@ -21,6 +24,19 @@ const servicesListRaw = [
 
 export default function ServicesPage() {
   const { t } = useTranslation();
+  const [cmsServices, setCmsServices] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const data = await client.fetch(SERVICES_QUERY);
+        setCmsServices(data);
+      } catch (error) {
+        console.error("Failed to fetch services from Sanity", error);
+      }
+    }
+    fetchServices();
+  }, []);
 
   const servicesList = servicesListRaw.map(service => ({
     ...service,
@@ -38,7 +54,20 @@ export default function ServicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {servicesList.map(service => (
+        {cmsServices.length > 0 ? cmsServices.map(service => (
+            <Link href={`/services/${service.slug}`} key={service._id}>
+                <Card className="h-full flex flex-col transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer">
+                    <CardHeader>
+                        <div className="flex items-center gap-4 mb-2">
+                            <CardTitle className="font-headline text-2xl">{service.title}</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <CardDescription>{service.shortDescription}</CardDescription>
+                    </CardContent>
+                </Card>
+            </Link>
+        )) : servicesList.map(service => (
             <Link href={`/services/${service.id}`} key={service.id}>
                 <Card className="h-full flex flex-col transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer">
                     <CardHeader>

@@ -38,7 +38,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
-import { MEMBERS_QUERY } from "@/sanity/lib/queries";
+import { MEMBERS_QUERY, ABOUT_PAGE_QUERY } from "@/sanity/lib/queries";
+import { PortableText } from "@portabletext/react";
 
 const leadershipData = [
   { id: "rahulMishra", imageUrl: "https://i.postimg.cc/3JdfvHM7/rahulsir1.jpg" },
@@ -91,17 +92,22 @@ const verticals = [
 export default function AboutPage() {
   const { t } = useTranslation();
   const [cmsMembers, setCmsMembers] = useState<any[]>([]);
+  const [cmsAbout, setCmsAbout] = useState<any>(null);
 
   useEffect(() => {
-    const fetchMembers = async () => {
+    const fetchData = async () => {
       try {
-        const data = await client.fetch(MEMBERS_QUERY);
-        setCmsMembers(data);
+        const [membersData, aboutData] = await Promise.all([
+          client.fetch(MEMBERS_QUERY),
+          client.fetch(ABOUT_PAGE_QUERY)
+        ]);
+        setCmsMembers(membersData);
+        setCmsAbout(aboutData);
       } catch (error) {
-        console.error("Failed to fetch members from Sanity", error);
+        console.error("Failed to fetch from Sanity", error);
       }
     };
-    fetchMembers();
+    fetchData();
   }, []);
 
   const leadership = [
@@ -170,11 +176,17 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           <div className="space-y-8">
             <h2 className="text-4xl font-headline text-primary border-b-4 border-accent/30 pb-2 inline-block">
-              {t('about_intro_title')}
+              {cmsAbout?.pageTitle || t('about_intro_title')}
             </h2>
             <div className="prose prose-lg text-muted-foreground max-w-none space-y-6">
-              <p>{t('about_intro_p1')}</p>
-              <p dangerouslySetInnerHTML={{ __html: t('about_intro_p2') }} />
+              {cmsAbout?.introduction ? (
+                <p>{cmsAbout.introduction}</p>
+              ) : (
+                <>
+                  <p>{t('about_intro_p1')}</p>
+                  <p dangerouslySetInnerHTML={{ __html: t('about_intro_p2') }} />
+                </>
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6 mt-12">
@@ -184,8 +196,12 @@ export default function AboutPage() {
                     <Target className="h-5 w-5" /> {t('about_mission_title')}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-muted-foreground text-sm leading-relaxed">
-                  {t('about_mission_desc')}
+                <CardContent className="text-muted-foreground text-sm leading-relaxed prose-sm prose-p:my-1">
+                  {cmsAbout?.mission ? (
+                    <PortableText value={cmsAbout.mission} />
+                  ) : (
+                    t('about_mission_desc')
+                  )}
                 </CardContent>
               </Card>
               <Card className="bg-accent/5 border-none shadow-none text-left">
@@ -194,8 +210,12 @@ export default function AboutPage() {
                     <Globe className="h-5 w-5" /> {t('about_vision_title')}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-muted-foreground text-sm leading-relaxed">
-                  {t('about_vision_desc')}
+                <CardContent className="text-muted-foreground text-sm leading-relaxed prose-sm prose-p:my-1">
+                  {cmsAbout?.history ? (
+                    <PortableText value={cmsAbout.history} />
+                  ) : (
+                    t('about_vision_desc')
+                  )}
                 </CardContent>
               </Card>
             </div>

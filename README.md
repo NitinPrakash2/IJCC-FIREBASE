@@ -227,4 +227,46 @@ You should already have been invited to the Sanity project. If not:
 - Ask the previous owner to invite your email with **Editor** or **Administrator** role
 
 
+---
 
+## Git Workflow — Developing Without Breaking the Live Site
+
+The live site auto-deploys every time someone pushes to the `main` branch via Firebase App Hosting.
+**Never push directly to `main`.** Always use feature branches.
+
+### Step-by-step
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/xynet7/IJCC-FIREBASE
+cd IJCC-FIREBASE
+
+# 2. Create a new branch for your work
+git checkout -b feature/your-feature-name
+
+# 3. Make your changes, then commit
+git add .
+git commit -m "feat: describe what you did"
+
+# 4. Push your branch to GitHub
+git push origin feature/your-feature-name
+
+# 5. Open a Pull Request on GitHub → merge to main when ready
+```
+
+### Branch structure
+
+```
+main                  ← live production site (auto-deploys on push)
+ └── feature/xyz      ← new dev works here, site is unaffected
+ └── fix/bug-name     ← bug fixes go here too
+```
+
+### Rules
+- ✅ Work freely on any `feature/` or `fix/` branch
+- ✅ Open a Pull Request on GitHub when ready to go live
+- ❌ Never push directly to `main`
+
+### Getting repo access
+Ask the owner to add you as a collaborator:
+`GitHub repo → Settings → Collaborators → Add people` → enter your GitHub username

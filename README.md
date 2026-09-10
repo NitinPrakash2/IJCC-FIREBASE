@@ -1,6 +1,6 @@
-# IJCC Website — Developer Handoff
+# IJCC Website — Developer Handoff Guide
 
-This is the official web application for the **India-Japan Chamber of Commerce (IJCC)**, built with **Next.js 15**, **Sanity CMS**, and **Firebase**.
+Official web application for the **India-Japan Chamber of Commerce (IJCC)**.
 
 ---
 
@@ -8,112 +8,223 @@ This is the official web application for the **India-Japan Chamber of Commerce (
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 (App Router) |
-| Styling | Tailwind CSS + shadcn/ui |
-| CMS | Sanity v3 |
-| Database / Auth | Firebase (Firestore + Auth) |
-| AI Assistant | Firebase Genkit + Google Gemini |
-| Deployment | Firebase App Hosting |
+| Framework | Next.js 15 (App Router, `src/` directory) |
+| Styling | Tailwind CSS + shadcn/ui component library |
+| CMS | Sanity v3 (Studio embedded at `/studio`) |
+| AI Assistant | Firebase Genkit + Google Gemini API |
+| Payments | Razorpay (membership fees) |
+| Contact Form | SMTP via Nodemailer + Google Sheets logging |
+| Deployment | Firebase App Hosting (auto-deploy on push to `main`) |
 
 ---
 
-## Getting Started
+## Quick Start
 
 ### 1. Prerequisites
-- Node.js 20+
-- A Sanity project (or ask for access to the existing one)
-- A Firebase project
+- **Node.js 20+** → [nodejs.org](https://nodejs.org)
+- Access to the **Sanity project** (you should already have an invite — check email)
 
-### 2. Clone & Install
+### 2. Clone / Extract & Install
 ```bash
+# If cloning from GitHub
 git clone <repo-url>
 cd IJCC-FIREBASE
+
+# If using the ZIP
+cd IJCC-FIREBASE
+
 npm install
 ```
 
 ### 3. Environment Variables
-Create a `.env.local` file in the root with the following keys (ask the previous owner for actual values):
-
-```env
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-
-# Sanity
-NEXT_PUBLIC_SANITY_PROJECT_ID=
-NEXT_PUBLIC_SANITY_DATASET=
-SANITY_API_TOKEN=
-
-# Google AI (for the chatbot)
-GOOGLE_GENAI_API_KEY=
+Copy `.env.example` to `.env.local` and fill in all values:
+```bash
+cp .env.example .env.local
 ```
+Then open `.env.local` and paste the values. See the **Credentials Handoff** section below.
 
 ### 4. Run Locally
 ```bash
 npm run dev
 ```
-
-The site runs at `http://localhost:9002` and the Sanity Studio at `http://localhost:9002/studio`.
+| URL | What it is |
+|---|---|
+| `http://localhost:9002` | The main website |
+| `http://localhost:9002/studio` | Sanity CMS Studio |
 
 ---
 
 ## Project Structure
 
 ```
-src/
-├── ai/                     # AI Chatbot (Firebase Genkit + Gemini)
-│   ├── flows/              # Genkit flows (site-assistant-flow.ts)
-│   └── genkit.ts           # Genkit initialization
-├── app/                    # Next.js App Router pages
-│   ├── about/
-│   ├── contact/
-│   ├── events/
-│   ├── gallery/
-│   ├── members/
-│   ├── news/
-│   ├── resources/
-│   ├── services/
-│   └── studio/[[...index]] # Sanity Studio embedded
-├── components/             # Reusable UI components
-├── hooks/                  # Custom React hooks (incl. translations)
-├── lib/                    # Firebase client and utilities
-├── locales/                # Translation JSON files (en, ja)
-└── sanity/
-    ├── lib/
-    │   ├── client.ts       # Sanity client
-    │   └── queries.ts      # All GROQ queries (central place to edit)
-    ├── schemaTypes/        # All Sanity content schemas
-    └── structure.ts        # Sanity Studio sidebar layout
+IJCC-FIREBASE/
+├── src/
+│   ├── ai/                        # AI Chatbot (Genkit + Gemini)
+│   │   ├── flows/
+│   │   │   └── site-assistant-flow.ts   # Main chatbot logic
+│   │   ├── dev.ts                 # Genkit dev server entry
+│   │   └── genkit.ts              # Genkit + Google AI initialization
+│   │
+│   ├── app/                       # Next.js App Router pages
+│   │   ├── about/                 # About Us page
+│   │   ├── contact/               # Contact page + FAQ
+│   │   ├── events/                # Events listing + detail pages
+│   │   ├── gallery/               # Photo gallery
+│   │   ├── members/               # Members directory
+│   │   ├── news/                  # News articles
+│   │   ├── resources/             # Resources + magazines
+│   │   ├── services/              # Services listing + detail pages
+│   │   ├── studio/[[...index]]/   # Sanity Studio (embedded)
+│   │   ├── layout.tsx             # Root layout (navbar, footer, chatbot)
+│   │   └── page.tsx               # Home page
+│   │
+│   ├── components/                # Reusable UI components
+│   │   ├── ui/                    # shadcn/ui primitives
+│   │   ├── chatbot.tsx            # AI chatbot widget
+│   │   ├── navbar.tsx
+│   │   ├── footer.tsx
+│   │   └── ...
+│   │
+│   ├── hooks/
+│   │   └── use-translation.ts     # i18n hook (reads from locales/)
+│   │
+│   ├── lib/
+│   │   └── firebase.ts            # Firebase client initialization
+│   │
+│   ├── locales/                   # Translation strings
+│   │   ├── en.json                # English
+│   │   └── ja.json                # Japanese
+│   │
+│   └── sanity/
+│       ├── lib/
+│       │   ├── client.ts          # Sanity client setup
+│       │   └── queries.ts         # All GROQ queries — edit here to change fetched data
+│       ├── schemaTypes/           # CMS content schemas (one file per content type)
+│       │   ├── index.ts           # Registers all schemas
+│       │   ├── homePage.ts
+│       │   ├── aboutPage.ts
+│       │   ├── contactPage.ts
+│       │   ├── serviceItem.ts
+│       │   ├── newsArticle.ts
+│       │   ├── resourceItem.ts
+│       │   └── ...
+│       └── structure.ts           # Sanity Studio sidebar layout
+│
+├── .env.example                   # Template for environment variables
+├── .env.local                     # ← You must create this (not in git)
+├── sanity.config.ts               # Sanity project config
+├── next.config.ts                 # Next.js config
+├── tailwind.config.ts             # Tailwind config
+└── apphosting.yaml                # Firebase App Hosting deploy config
 ```
 
 ---
 
-## CMS (Sanity Studio)
+## CMS — Sanity Studio
 
-All content is managed via Sanity Studio at `/studio`. The following pages are fully editable:
+All website content is managed via the Sanity Studio at `/studio`.
 
-- **Static Pages**: Home, About Us, Contact
-- **Collections**: Services, News Articles, Resources, Members, Events
-- **Global Settings**: Site title, logo, contact email, phone, social links
+### What's Editable via CMS
 
-To add content or change text on any page, log into the Sanity Studio.
+| Section | CMS Document Type |
+|---|---|
+| Home page hero, welcome text | `Home Page` (Static Pages) |
+| About Us intro, mission, vision | `About Page` (Static Pages) |
+| Contact page, offices, FAQs | `Contact Page` (Static Pages) |
+| Global settings (email, phone, logo, socials) | `Site Settings` |
+| Services list | `Service Items` |
+| News articles | `News Articles` |
+| Resources & magazines | `Resources` |
+| Member profiles | `Members` |
+
+### How CMS + Frontend Works
+- Each page fetches its CMS content on load via GROQ queries in `src/sanity/lib/queries.ts`
+- **If a CMS field is empty**, the page automatically falls back to the static translation string from `src/locales/`
+- This means the site works even if the CMS is empty — you populate fields at your own pace
 
 ---
 
-## Localization
+## Localization (i18n)
 
-The site supports **English** and **Japanese**. Translation strings are in:
-- `src/locales/en.json`
-- `src/locales/ja.json`
+The site supports **English 🇬🇧** and **Japanese 🇯🇵**.
 
-The `useTranslation()` hook resolves these at runtime. CMS content always takes priority over translation strings.
+- Translation strings: `src/locales/en.json` and `src/locales/ja.json`
+- The `useTranslation()` hook (in `src/hooks/use-translation.ts`) handles language switching
+- CMS content always overrides translation fallbacks
+
+To add a new translation key:
+1. Add the key + English value to `src/locales/en.json`
+2. Add the key + Japanese value to `src/locales/ja.json`
+3. Use `const { t } = useTranslation(); t('your_key')` in the component
+
+---
+
+## AI Chatbot
+
+The chatbot in the bottom-right corner is powered by **Google Gemini** via Firebase Genkit.
+
+- Flow logic: `src/ai/flows/site-assistant-flow.ts`
+- Genkit config: `src/ai/genkit.ts`
+- UI component: `src/components/chatbot.tsx`
+- Requires `GOOGLE_GENAI_API_KEY` in `.env.local`
 
 ---
 
 ## Deployment
 
-The project is hosted on **Firebase App Hosting**. Deployment is configured via `apphosting.yaml`. Push to the `main` branch triggers an automatic redeploy.
+The site deploys automatically to **Firebase App Hosting** on every push to `main`.
+
+- Config: `apphosting.yaml`
+- No manual build step needed — just push to `main`
+- To deploy manually: `firebase deploy`
+
+---
+
+## Credentials Handoff
+
+> **You should receive these values separately from the previous owner.**
+> Copy them into your `.env.local` file.
+
+### What you need and where to get it if lost
+
+| Variable | Where to get it |
+|---|---|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | [sanity.io/manage](https://sanity.io/manage) → your project → Settings |
+| `NEXT_PUBLIC_SANITY_DATASET` | Same as above (usually `production`) |
+| `GEMINI_API_KEY` / `GOOGLE_GENAI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) → Get API Key |
+| `NEXT_PUBLIC_FIREBASE_*` | [console.firebase.google.com](https://console.firebase.google.com) → Project Settings → Your Apps |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | [dashboard.razorpay.com](https://dashboard.razorpay.com) → Settings → API Keys |
+| `SMTP_*` | Your email provider settings (or create a Gmail App Password) |
+| `GOOGLE_SHEET_WEB_APP_URL` | Google Apps Script → Deploy → Web App URL |
+
+---
+
+## Common Tasks
+
+### Add a new page
+1. Create `src/app/your-page/page.tsx`
+2. Add the route to the navbar in `src/components/navbar.tsx`
+
+### Add a new CMS-managed field
+1. Add the field to the relevant schema in `src/sanity/schemaTypes/`
+2. Add it to the GROQ query in `src/sanity/lib/queries.ts`
+3. Use it in the frontend component with a fallback: `cms?.field || t('fallback_key')`
+
+### Add a new translation string
+1. Add to `src/locales/en.json`
+2. Add to `src/locales/ja.json`
+3. Use `t('key')` in your component
+
+### Change site-wide colors/fonts
+- `tailwind.config.ts` → `theme.extend.colors`
+
+---
+
+## Sanity Studio Access
+
+You should already have been invited to the Sanity project. If not:
+- Go to [sanity.io/manage](https://sanity.io/manage)
+- Ask the previous owner to invite your email with **Editor** or **Administrator** role
+
+
+

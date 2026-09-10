@@ -97,7 +97,7 @@ export default function NewsPage() {
                   width={750}
                   height={430}
                   className="rounded-t-lg object-contain w-full h-full transition-transform duration-500 hover:scale-110"
-                  data-ai-hint={article.hint}
+                 
                 />
               </div>
               <CardTitle className="font-headline text-xl leading-tight hover:text-primary transition-colors">

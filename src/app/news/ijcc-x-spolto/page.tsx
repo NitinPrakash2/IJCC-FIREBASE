@@ -142,7 +142,7 @@ export default function SpoltoJVPage() {
               alt="Spolto Coaching" 
               fill 
               className="object-cover"
-              data-ai-hint="sports coaching"
+             
             />
           </div>
         </div>

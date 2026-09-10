@@ -116,7 +116,7 @@ export default function MagazinesPage() {
                     alt={featuredMagazine.title}
                     layout="fill"
                     objectFit="cover"
-                    data-ai-hint={featuredMagazine.hint}
+                   
                     className="rounded-lg"
                 />
             </div>
@@ -141,7 +141,7 @@ export default function MagazinesPage() {
                         alt={magazine.title}
                         layout="fill"
                         objectFit="cover"
-                        data-ai-hint={magazine.hint}
+                       
                     />
                 </div>
                 <div className="p-6">

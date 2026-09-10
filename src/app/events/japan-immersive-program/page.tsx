@@ -72,7 +72,7 @@ export default function JapanImmersiveProgramPage() {
                   alt="Japan Immersion Program"
                   fill
                   className="object-cover"
-                  data-ai-hint={placeholders.japanImmersivePoster.hint}
+                 
                   priority
                 />
               </div>
@@ -91,7 +91,7 @@ export default function JapanImmersiveProgramPage() {
                       width={200}
                       height={200}
                       className="object-contain p-2"
-                      data-ai-hint={placeholders.japanImmersiveQr.hint}
+                     
                       unoptimized
                     />
                   </div>

@@ -317,7 +317,7 @@ export function MembershipDetails() {
                             width={200}
                             height={200}
                             className="rounded-xl"
-                            data-ai-hint="qr code"
+                           
                         />
                     </div>
                     <div className="flex flex-col items-center gap-1">

@@ -156,7 +156,7 @@ export default function NihonEdutechMoUPage() {
               alt="Nihon Edutech Training" 
               fill 
               className="object-cover"
-              data-ai-hint="nihon edutech mou"
+             
             />
           </div>
         </div>

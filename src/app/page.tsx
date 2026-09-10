@@ -111,7 +111,7 @@ export default function Home() {
                       alt={item.alt}
                       fill
                       className="object-cover brightness-[0.6]"
-                      data-ai-hint={item.hint}
+                     
                     />
                 ) : (
                    <div className="absolute inset-0 w-full h-full overflow-hidden brightness-[0.6]">
@@ -174,7 +174,7 @@ export default function Home() {
               alt="About IJCC"
               layout="fill"
               objectFit="cover"
-              data-ai-hint="india japan handshake"
+             
               className="rounded-xl"
             />
           </div>
@@ -251,7 +251,7 @@ export default function Home() {
                     <Link href={partner.href} key={partner.name} target="_blank" rel="noopener noreferrer" className="block">
                        <Card className="flex items-center justify-center p-6 h-40 transition-transform transform hover:scale-105 hover:shadow-lg">
                           <CardContent className="p-0 flex items-center justify-center">
-                            <Image src={partner.logoUrl} alt={partner.name} width={150} height={80} className="object-contain" data-ai-hint={partner.hint} />
+                            <Image src={partner.logoUrl} alt={partner.name} width={150} height={80} className="object-contain" />
                           </CardContent>
                        </Card>
                     </Link>

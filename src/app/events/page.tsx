@@ -204,7 +204,7 @@ export default function EventsPage() {
                           alt={event.title} 
                           layout="fill" 
                           objectFit={(event.isVertical ? "contain" : "cover")}
-                          data-ai-hint={event.hint}
+                         
                           className={cn("transition-transform duration-300 hover:scale-105", event.isVertical && "bg-secondary p-2")}
                       />
                     </div>

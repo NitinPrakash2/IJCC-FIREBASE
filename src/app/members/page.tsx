@@ -78,7 +78,7 @@ export default function MembersPage() {
                         width={150} 
                         height={80} 
                         className={`object-contain ${member.className || ''}`}
-                        data-ai-hint={member.hint} 
+                        
                     />
                 </CardContent>
               </Card>

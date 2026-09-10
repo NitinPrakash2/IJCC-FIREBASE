@@ -171,7 +171,7 @@ export default function SEMEventsMoUPage() {
               alt="SEM Events Management" 
               fill 
               className="object-cover"
-              data-ai-hint="professional event"
+             
             />
           </div>
         </div>

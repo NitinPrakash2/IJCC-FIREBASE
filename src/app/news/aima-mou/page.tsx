@@ -160,7 +160,7 @@ export default function AIMAMoUPage() {
               alt="AIMA Management Training" 
               fill 
               className="object-cover"
-              data-ai-hint="professional meeting"
+             
             />
           </div>
         </div>
